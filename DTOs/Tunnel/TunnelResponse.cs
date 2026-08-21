@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace gb_prod_api.Models
+namespace gb_prod_api.DTOs.Tunel
 {
-    public class Tunnel
+    public class TunnelResponse
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
