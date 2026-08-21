@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 
 namespace gb_prod_api.Models
 {
-    public class PawColor
+    public class Tunnel
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-
-        public ICollection<PawGrade> PawGrades { get; set; } = [];
     }
 }

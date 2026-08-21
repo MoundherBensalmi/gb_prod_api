@@ -1,5 +1,4 @@
 using gb_prod_api.Data;
-using gb_prod_api.Services;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -13,9 +12,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
-
-// services registration
-builder.Services.AddScoped<IProductService, ProductService>();
 
 // ----------------------
 var app = builder.Build();
