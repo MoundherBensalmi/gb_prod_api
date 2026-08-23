@@ -12,6 +12,7 @@ namespace gb_prod_api.DTOs.Grade
         public int PawColorId { get; set; }
         public PawColorResponse PawColor { get; set; } = null!;
         public string Name { get; set; } = null!;
+        public string ArabicName { get; set; } = null!;
         public string? Description { get; set; }
     }
 }

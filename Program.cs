@@ -16,9 +16,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register services
 builder.Services.AddScoped<ProductionDayService>();
+builder.Services.AddScoped<TunnelService>();
 
 // ----------------------
 var app = builder.Build();
+
+// Destructive: wipes every table before reseeding. Opt in with "dotnet run -- --seed".
+if (args.Contains("--seed"))
+{
+    using var seedScope = app.Services.CreateScope();
+    var seedDbContext = seedScope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DbSeeder.SeedAsync(seedDbContext);
+    Console.WriteLine("Database cleared and seeded.");
+    return;
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

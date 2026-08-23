@@ -9,6 +9,7 @@ namespace gb_prod_api.Models
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
+        public string ArabicName { get; set; } = null!;
 
         public ICollection<PawGrade> PawGrades { get; set; } = [];
     }

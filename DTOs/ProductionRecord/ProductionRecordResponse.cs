@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using gb_prod_api.DTOs.Grade;
 using gb_prod_api.DTOs.PawColor;
 using gb_prod_api.DTOs.Tunel;
+using gb_prod_api.Models;
 
 namespace gb_prod_api.DTOs.ProductionRecord
 {
@@ -16,12 +17,13 @@ namespace gb_prod_api.DTOs.ProductionRecord
 
         public decimal QuantityKg { get; set; }
 
+        public ProductionRecordStatus Status { get; set; }
         public DateTime? MovedOutAt { get; set; }
 
         public long PawGradeId { get; set; }
         public PawGradeResponse PawGrade { get; set; } = null!;
 
-        public long TunnelId { get; set; }
+        public int TunnelId { get; set; }
         public TunnelResponse Tunnel { get; set; } = null!;
 
         public string? Notes { get; set; }

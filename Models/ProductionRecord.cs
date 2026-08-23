@@ -17,8 +17,10 @@ namespace gb_prod_api.Models
         public int PawGradeId { get; set; }
         public PawGrade PawGrade { get; set; } = null!;
 
-        public int? TunnelId { get; set; }
-        public Tunnel? Tunnel { get; set; }
+        public int TunnelId { get; set; }
+
+        [DeleteBehavior(DeleteBehavior.Restrict)]
+        public Tunnel Tunnel { get; set; } = null!;
 
         public DateTime ProducedAt { get; set; }
 

@@ -10,6 +10,7 @@ namespace gb_prod_api.DTOs.PawColor
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
+        public string ArabicName { get; set; } = null!;
         public ICollection<PawGradeResponse> PawGrades { get; set; } = [];
     }
 }

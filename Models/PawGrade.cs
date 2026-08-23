@@ -11,6 +11,7 @@ namespace gb_prod_api.Models
         public int PawColorId { get; set; }
         public PawColor PawColor { get; set; } = null!;
         public string Name { get; set; } = null!;
+        public string ArabicName { get; set; } = null!;
         public string? Description { get; set; }
     }
 }
