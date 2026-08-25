@@ -1,5 +1,6 @@
 using gb_prod_api.Data;
 using gb_prod_api.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -17,6 +18,33 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Register services
 builder.Services.AddScoped<ProductionDayService>();
 builder.Services.AddScoped<TunnelService>();
+builder.Services.AddScoped<ProductionRecordService>();
+
+// validation error
+builder.Services
+    .AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.InvalidModelStateResponseFactory = context =>
+        {
+            var error = context.ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .Where(x => x.Key != "request")
+                .Select(x => x.Key)
+                .First();
+
+            var response = new
+            {
+                code = "VALIDATION_ERROR",
+                message = "One or more fields are invalid.",
+                field = error.StartsWith("$.")
+                    ? error[2..]
+                    : error,
+            };
+
+            return new BadRequestObjectResult(response);
+        };
+    });
 
 // ----------------------
 var app = builder.Build();
