@@ -15,30 +15,31 @@ namespace gb_prod_api.Services
         private readonly AppDbContext _dbContext = dbContext;
         private readonly ProductionDayService _productionDayService = productionDayService;
 
-        public async Task<Result<ProductionRecord>> CreateProductionRecordAsync(CreateProductionRecordRequest requset)
+        public async Task<Result<ProductionRecord>> CreateProductionRecordAsync(CreateProductionRecordRequest request)
         {
-            var productionDay = await _productionDayService.GetProductionDayByIdAsync(requset.ProductionDayId);
+            var productionDay = await _productionDayService.GetProductionDayByIdAsync(request.ProductionDayId);
             if (productionDay == null)
             {
-                return AppError.Validation(message: "production_day.invalide", field: nameof(requset.ProductionDayId));
+                return AppError.Validation(message: "production_day.invalide", field: nameof(request.ProductionDayId));
             }
 
-            var isSameDate = productionDay.Date.Equals(requset.ProducedAt.Date);
+            var isSameDate = productionDay.Date == DateOnly.FromDateTime(request.ProducedAt.Date);
+
             if (!isSameDate)
             {
-                return AppError.Validation(message: "productionRecord.producedAt.notSameDate", field: nameof(requset.ProducedAt));
+                return AppError.Validation(message: "productionRecord.producedAt.notSameDate", field: nameof(request.ProducedAt));
             }
 
             var productionRecord = new ProductionRecord
             {
-                ProductionDayId = requset.ProductionDayId,
-                PawGradeId = requset.PawGradeId,
-                TunnelId = requset.TunnelId,
-                ProducedAt = requset.ProducedAt,
-                QuantityKg = requset.QuantityKg,
-                MovedOutAt = requset.MovedOutAt,
+                ProductionDayId = request.ProductionDayId,
+                PawGradeId = request.PawGradeId,
+                TunnelId = request.TunnelId,
+                ProducedAt = request.ProducedAt,
+                QuantityKg = request.QuantityKg,
+                MovedOutAt = request.MovedOutAt,
                 Status = ProductionRecordStatus.Accepted,
-                Notes = requset.Notes
+                Notes = request.Notes
             };
 
             _dbContext.ProductionRecords.Add(productionRecord);

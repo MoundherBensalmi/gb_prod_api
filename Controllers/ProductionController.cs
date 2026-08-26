@@ -24,8 +24,11 @@ namespace gb_prod_api.Controllers
             {
                 return result.ToErrorActionResult(this);
             }
-            
-            return ProductionRecordMapper.ToResponse(result.Data!);
+
+            return Created(
+                String.Empty,
+                ProductionRecordMapper.ToResponse(result.Data!)
+            );
         }
     }
 }

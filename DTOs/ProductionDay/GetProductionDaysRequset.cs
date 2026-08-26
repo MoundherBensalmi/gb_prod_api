@@ -7,7 +7,9 @@ namespace gb_prod_api.DTOs.Production
 {
     public class GetProductionDaysRequest
     {
-        public DateOnly StartDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
-        public DateOnly EndDate { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        private static readonly DateOnly Today = DateOnly.FromDateTime(DateTime.Now);
+
+        public DateOnly StartDate { get; set; } = new DateOnly(Today.Year, Today.Month, 1);
+        public DateOnly EndDate { get; set; } = new DateOnly(Today.Year, Today.Month, DateTime.DaysInMonth(Today.Year, Today.Month));
     }
 }
