@@ -19,7 +19,6 @@ namespace gb_prod_api.Controllers
         [HttpPost]
         public async Task<ActionResult<ProductionRecordResponse>> CreateProductionRecord([FromBody] CreateProductionRecordRequest request)
         {
-            Console.WriteLine("Message: Reached");
             var result  = await _productionRecordService.CreateProductionRecordAsync(request);
             if (!result.IsSuccess)
             {

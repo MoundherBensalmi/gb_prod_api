@@ -26,7 +26,7 @@ namespace gb_prod_api.Services
             var isSameDate = productionDay.Date.Equals(requset.ProducedAt.Date);
             if (!isSameDate)
             {
-                return AppError.Validation(message: "productionRecord.producedAt.invalide", field: nameof(requset.ProducedAt));
+                return AppError.Validation(message: "productionRecord.producedAt.notSameDate", field: nameof(requset.ProducedAt));
             }
 
             var productionRecord = new ProductionRecord
