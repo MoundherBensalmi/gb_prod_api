@@ -27,19 +27,24 @@ builder.Services
     {
         options.InvalidModelStateResponseFactory = context =>
         {
-            var error = context.ModelState
+            var key = context.ModelState
                 .Where(x => x.Value?.Errors.Count > 0)
                 .Where(x => x.Key != "request")
                 .Select(x => x.Key)
                 .First();
 
+            var field = key.StartsWith("$.")
+                ? key[2..]
+                : key;
+
+            var errorMessage = context.ModelState[key]!.Errors.First().ErrorMessage;
+
             var response = new
             {
-                code = "VALIDATION_ERROR",
-                message = "One or more fields are invalid.",
-                field = error.StartsWith("$.")
-                    ? error[2..]
-                    : error,
+                title = "Validation",
+                status = StatusCodes.Status400BadRequest,
+                detail = errorMessage,
+                field
             };
 
             return new BadRequestObjectResult(response);

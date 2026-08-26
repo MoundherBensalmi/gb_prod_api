@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Permissions;
 using System.Threading.Tasks;
+using gb_prod_api.Common;
 using gb_prod_api.Data;
 using gb_prod_api.DTOs.ProductionRecord;
 using gb_prod_api.Models;
-using gb_prod_api.Services.Results;
 
 namespace gb_prod_api.Services
 {
@@ -15,18 +15,18 @@ namespace gb_prod_api.Services
         private readonly AppDbContext _dbContext = dbContext;
         private readonly ProductionDayService _productionDayService = productionDayService;
 
-        public async Task<ServiceResult<ProductionRecord>> CreateProductionRecordAsync(CreateProductionRecordRequest requset)
+        public async Task<Result<ProductionRecord>> CreateProductionRecordAsync(CreateProductionRecordRequest requset)
         {
             var productionDay = await _productionDayService.GetProductionDayByIdAsync(requset.ProductionDayId);
             if (productionDay == null)
             {
-                return ServiceResult<ProductionRecord>.Fail(
-                    new ServiceError{
-                        Code = "invalide_production_day",
-                        Message = "invalide_production_day",
-                        Field = nameof(requset.ProductionDayId)
-                    }
-                );
+                return AppError.Validation(message: "production_day.invalide", field: nameof(requset.ProductionDayId));
+            }
+
+            var isSameDate = productionDay.Date.Equals(requset.ProducedAt.Date);
+            if (!isSameDate)
+            {
+                return AppError.Validation(message: "productionRecord.producedAt.invalide", field: nameof(requset.ProducedAt));
             }
 
             var productionRecord = new ProductionRecord
@@ -44,7 +44,7 @@ namespace gb_prod_api.Services
             _dbContext.ProductionRecords.Add(productionRecord);
             await _dbContext.SaveChangesAsync();
 
-            return ServiceResult<ProductionRecord>.Ok(productionRecord);
+            return Result<ProductionRecord>.Success(productionRecord);
         }
     }
 }

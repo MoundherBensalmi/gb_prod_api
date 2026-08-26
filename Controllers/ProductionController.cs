@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gb_prod_api.Common;
 using gb_prod_api.DTOs.ProductionRecord;
 using gb_prod_api.Mappers;
 using gb_prod_api.Services;
@@ -20,10 +21,9 @@ namespace gb_prod_api.Controllers
         {
             Console.WriteLine("Message: Reached");
             var result  = await _productionRecordService.CreateProductionRecordAsync(request);
-            if (result.Success == false)
+            if (!result.IsSuccess)
             {
-                Console.WriteLine("Message:" + result.Error!.Message);
-                return BadRequest(result.Error);
+                return result.ToErrorActionResult(this);
             }
             
             return ProductionRecordMapper.ToResponse(result.Data!);
