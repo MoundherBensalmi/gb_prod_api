@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gb_prod_api.Common;
 using gb_prod_api.DTOs.Tunel;
 using gb_prod_api.Mappers;
 using gb_prod_api.Models;
@@ -60,12 +61,12 @@ namespace gb_prod_api.Controllers
         public async Task<IActionResult> DeleteTunnel(int id)
         {
             var result = await _tunnelService.DeleteTunnelAsync(id);
-            return result switch
+            if(!result.IsSuccess)
             {
-                DeleteTunnelResult.Deleted => NoContent(),
-                DeleteTunnelResult.NotFound => NotFound(),
-                _ => Conflict("Tunnel is used by existing production records and cannot be deleted."),
-            };
+                return result.ToErrorActionResult(this);
+            }
+
+            return NoContent();
         }
     }
 }

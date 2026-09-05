@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gb_prod_api.Common;
 using gb_prod_api.Data;
 using gb_prod_api.Models;
 using Microsoft.EntityFrameworkCore;
@@ -63,14 +64,14 @@ namespace gb_prod_api.Services
             return tunnel;
         }
 
-        public async Task<DeleteTunnelResult> DeleteTunnelAsync(int id)
+        public async Task<Result<bool>> DeleteTunnelAsync(int id)
         {
             var tunnel = await _dbContext.Tunnels
                 .FirstOrDefaultAsync(t => t.Id == id);
 
             if (tunnel == null)
             {
-                return DeleteTunnelResult.NotFound;
+                return AppError.NotFound(message: "tunnel.notFound");
             }
 
             // The ProductionRecords -> Tunnels FK has no cascade, so deleting a
@@ -80,13 +81,13 @@ namespace gb_prod_api.Services
 
             if (isInUse)
             {
-                return DeleteTunnelResult.InUse;
+                return AppError.Conflict(message: "tunnel.inUse");
             }
 
             _dbContext.Tunnels.Remove(tunnel);
             await _dbContext.SaveChangesAsync();
 
-            return DeleteTunnelResult.Deleted;
+            return Result<bool>.Success(true);
         }
     }
 }
