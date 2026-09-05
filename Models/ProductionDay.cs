@@ -13,6 +13,8 @@ namespace gb_prod_api.Models
 
         public DateOnly Date { get; set; }
 
+        public bool IsClosed { get; set; } = false;
+
         public ICollection<ProductionRecord> ProductionRecords { get; set; } = [];
     }
 }

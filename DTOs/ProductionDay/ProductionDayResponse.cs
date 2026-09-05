@@ -12,6 +12,8 @@ namespace gb_prod_api.DTOs.ProductionDay
 
         public DateOnly Date { get; set; }
 
+        public bool IsClosed { get; set; }
+
         public List<ProductionRecordResponse> ProductionRecords { get; set; } = [];
     }
 }
