@@ -21,5 +21,8 @@ namespace gb_prod_api.Data
         public DbSet<ContainerShipmentItem> ContainerShipmentItems => Set<ContainerShipmentItem>();
 
         public DbSet<StockAdjustment> StockAdjustments => Set<StockAdjustment>();
+
+        public DbSet<User> Users => Set<User>();
+        public DbSet<UserPermission> UserPermissions => Set<UserPermission>();
     }
 }

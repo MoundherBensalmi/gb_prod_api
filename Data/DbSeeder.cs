@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using gb_prod_api.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace gb_prod_api.Data
@@ -21,6 +22,7 @@ namespace gb_prod_api.Data
             await SeedProductionAsync(dbContext, tunnels, pawGrades);
             await SeedContainerShipmentsAsync(dbContext, pawGrades);
             await SeedStockAdjustmentsAsync(dbContext, pawGrades);
+            await SeedUsersAsync(dbContext);
         }
 
         /// <summary>
@@ -32,6 +34,8 @@ namespace gb_prod_api.Data
             await dbContext.Database.ExecuteSqlRawAsync(
                 """
                 TRUNCATE TABLE
+                    "UserPermissions",
+                    "Users",
                     "StockAdjustments",
                     "ContainerShipmentItems",
                     "ContainerShipments",
@@ -42,6 +46,33 @@ namespace gb_prod_api.Data
                     "Tunnels"
                 RESTART IDENTITY CASCADE;
                 """);
+        }
+
+        private static async Task SeedUsersAsync(AppDbContext dbContext)
+        {
+            var passwordHasher = new PasswordHasher<User>();
+
+            var admin = new User
+            {
+                Username = "admin",
+                Role = UserRole.Admin,
+            };
+            admin.PasswordHash = passwordHasher.HashPassword(admin, "admin123");
+
+            var user = new User
+            {
+                Username = "user",
+                Role = UserRole.User,
+                UserPermissions =
+                [
+                    new() { Permission = Permission.ViewProduction },
+                    new() { Permission = Permission.ViewTunnels },
+                ],
+            };
+            user.PasswordHash = passwordHasher.HashPassword(user, "user123");
+
+            dbContext.Users.AddRange(admin, user);
+            await dbContext.SaveChangesAsync();
         }
 
         private static async Task<List<Tunnel>> SeedTunnelsAsync(AppDbContext dbContext)

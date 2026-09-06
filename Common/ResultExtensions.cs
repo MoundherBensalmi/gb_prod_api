@@ -55,6 +55,7 @@ namespace gb_prod_api.Common
                 Status = error.Type switch
                 {
                     AppErrorType.Validation => StatusCodes.Status400BadRequest,
+                    AppErrorType.Unauthorized => StatusCodes.Status401Unauthorized,
                     AppErrorType.NotFound => StatusCodes.Status404NotFound,
                     AppErrorType.Conflict => StatusCodes.Status409Conflict,
                     _ => StatusCodes.Status500InternalServerError

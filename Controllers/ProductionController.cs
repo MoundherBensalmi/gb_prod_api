@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using gb_prod_api.Auth;
 using gb_prod_api.Common;
 using gb_prod_api.DTOs.ProductionRecord;
 using gb_prod_api.Mappers;
+using gb_prod_api.Models;
 using gb_prod_api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +18,7 @@ namespace gb_prod_api.Controllers
     {
         private readonly ProductionRecordService _productionRecordService = productionRecordService;
 
+        [HasPermission(Permission.ManageProduction)]
         [HttpPost]
         public async Task<ActionResult<ProductionRecordResponse>> CreateProductionRecord([FromBody] CreateProductionRecordRequest request)
         {

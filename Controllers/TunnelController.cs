@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using gb_prod_api.Common;
+using gb_prod_api.Auth;
 using gb_prod_api.DTOs.Tunel;
 using gb_prod_api.Mappers;
 using gb_prod_api.Models;
@@ -17,6 +18,7 @@ namespace gb_prod_api.Controllers
     {
         private readonly TunnelService _tunnelService = tunnelService;
 
+        [HasPermission(Permission.ViewTunnels)]
         [HttpGet]
         public async Task<ActionResult<List<TunnelResponse>>> GetTunnels()
         {
@@ -24,6 +26,7 @@ namespace gb_prod_api.Controllers
             return TunelMapper.ToResponse(tunnels);
         }
 
+        [HasPermission(Permission.ViewTunnels)]
         [HttpGet("{id:int}")]
         public async Task<ActionResult<TunnelResponse>> GetTunnelById(int id)
         {
@@ -35,6 +38,7 @@ namespace gb_prod_api.Controllers
             return TunelMapper.ToResponse(tunnel);
         }
 
+        [HasPermission(Permission.ManageTunnels)]
         [HttpPost]
         public async Task<ActionResult<TunnelResponse>> CreateTunnel([FromBody] CreateTunnelRequest request)
         {
@@ -46,6 +50,7 @@ namespace gb_prod_api.Controllers
             );
         }
 
+        [HasPermission(Permission.ManageTunnels)]
         [HttpPut("{id:int}")]
         public async Task<ActionResult<TunnelResponse>> UpdateTunnel(int id, [FromBody] UpdateTunnelRequest request)
         {
@@ -57,6 +62,7 @@ namespace gb_prod_api.Controllers
             return TunelMapper.ToResponse(tunnel);
         }
 
+        [HasPermission(Permission.ManageTunnels)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteTunnel(int id)
         {

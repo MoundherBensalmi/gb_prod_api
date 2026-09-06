@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using gb_prod_api.Auth;
 using gb_prod_api.DTOs.Production;
 using gb_prod_api.DTOs.ProductionDay;
 using gb_prod_api.Mappers;
@@ -14,6 +15,7 @@ namespace gb_prod_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [HasPermission(Permission.ViewProduction)]
     public class ProductionDayController(ProductionDayService productionDayService) : ControllerBase
     {
         private readonly ProductionDayService _productionDayService = productionDayService;

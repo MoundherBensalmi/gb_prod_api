@@ -8,6 +8,7 @@ namespace gb_prod_api.Common
     public enum AppErrorType
     {
         Validation,
+        Unauthorized,
         NotFound,
         Conflict,
         Unexpected

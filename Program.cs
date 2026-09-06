@@ -1,7 +1,13 @@
+using System.Text;
+using gb_prod_api.Auth;
 using gb_prod_api.Data;
+using gb_prod_api.Models;
 using gb_prod_api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +25,35 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<ProductionDayService>();
 builder.Services.AddScoped<TunnelService>();
 builder.Services.AddScoped<ProductionRecordService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TokenService>();
+
+// Authentication
+var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>()!;
+builder.Services.AddSingleton(jwtOptions);
+builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.MapInboundClaims = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtOptions.Issuer,
+            ValidAudience = jwtOptions.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+            NameClaimType = AppClaims.Username,
+            RoleClaimType = AppClaims.Role,
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 // validation error
 builder.Services
@@ -72,6 +107,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
